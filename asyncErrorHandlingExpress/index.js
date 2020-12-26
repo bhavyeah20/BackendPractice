@@ -95,6 +95,22 @@ app.delete("/products/:id", async (req, res) => {
   res.redirect("/products");
 });
 
+handleValidationError = err => {
+  console.log('Its a validation error!');
+  return err;
+}
+
+app.use((err, req, res, next) => {
+  console.log('*********');
+  console.log(err.name);
+  console.log('*********');
+  if (err.name === 'ValidationError') {
+    console.dir(err);
+    err = handleValidationError(err);
+  }
+  next(err);
+})
+
 app.use((err, req, res, next) => {
   const { status = 500, message = "Bad errrorrr" } = err;
   res.status(status).send(message);
